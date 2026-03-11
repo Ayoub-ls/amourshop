@@ -4,6 +4,7 @@ import { useLanguage } from '../context/LanguageContext';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'motion/react';
+import API from '../services/api';
 
 export default function Checkout() {
   const { cart, total, clearCart } = useCart();
@@ -29,7 +30,7 @@ export default function Checkout() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await fetch('/api/orders', {
+      const res = await fetch(API + '/api/orders', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

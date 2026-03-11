@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { Plus, Edit2, Trash2, Package, ShoppingBag, Users } from 'lucide-react';
+import API from '../services/api';
 
 export default function AdminDashboard() {
   const { user, token, loading: authLoading } = useAuth();
@@ -39,10 +40,10 @@ export default function AdminDashboard() {
 
   const fetchData = async () => {
     try {
-      const prodRes = await fetch('/api/products');
+      const prodRes = await fetch(API + '/api/products');
       setProducts(await prodRes.json());
 
-      const orderRes = await fetch('/api/orders', {
+      const orderRes = await fetch(API + '/api/orders', {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       setOrders(await orderRes.json());
@@ -54,7 +55,7 @@ export default function AdminDashboard() {
   const handleAddProduct = async (e) => {
     e.preventDefault();
     try {
-      const res = await fetch('/api/products', {
+      const res = await fetch(API + '/api/products', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -75,7 +76,7 @@ export default function AdminDashboard() {
   const handleDeleteProduct = async (id) => {
     if (!window.confirm('Are you sure you want to delete this product?')) return;
     try {
-      await fetch(`/api/products/${id}`, {
+      await fetch(API + `/api/products/${id}`, {
         method: 'DELETE',
         headers: { 'Authorization': `Bearer ${token}` }
       });

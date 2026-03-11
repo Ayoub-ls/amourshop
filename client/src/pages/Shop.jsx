@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useLanguage } from '../context/LanguageContext';
 import ProductCard from '../components/ProductCard';
 import { Search, Filter } from 'lucide-react';
+import API from '../services/api';
 
 export default function Shop() {
   const { t } = useLanguage();
@@ -17,7 +18,7 @@ export default function Shop() {
   const fetchProducts = async () => {
     setLoading(true);
     try {
-      let url = '/api/products';
+      let url = API + '/api/products';
       if (category) url += `?category=${category}`;
       const res = await fetch(url);
       const data = await res.json();

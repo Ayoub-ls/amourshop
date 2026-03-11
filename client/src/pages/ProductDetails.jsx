@@ -4,6 +4,7 @@ import { useCart } from '../context/CartContext';
 import { useLanguage } from '../context/LanguageContext';
 import { ShoppingCart, ArrowLeft, Heart } from 'lucide-react';
 import { motion } from 'motion/react';
+import API from '../services/api';
 
 export default function ProductDetails() {
   const { id } = useParams();
@@ -16,7 +17,7 @@ export default function ProductDetails() {
   const [quantity, setQuantity] = useState(1);
 
   useEffect(() => {
-    fetch(`/api/products/${id}`)
+    fetch(API + `/api/products/${id}`)
       .then(res => res.json())
       .then(data => {
         setProduct(data);
@@ -72,11 +73,10 @@ export default function ProductDetails() {
                   <button
                     key={size}
                     onClick={() => setSelectedSize(size)}
-                    className={`px-6 py-2 rounded-full border-2 transition-all font-bold ${
-                      selectedSize === size
+                    className={`px-6 py-2 rounded-full border-2 transition-all font-bold ${selectedSize === size
                         ? 'border-primary bg-primary text-white'
                         : 'border-pink-100 text-gray-400 hover:border-primary/50'
-                    }`}
+                      }`}
                   >
                     {size}
                   </button>

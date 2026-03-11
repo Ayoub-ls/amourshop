@@ -6,10 +6,10 @@ import { fileURLToPath } from 'url';
 import { createServer as createViteServer } from 'vite';
 import pg from 'pg';
 
-import authRoutes from './server/routes/auth.js';
-import productRoutes from './server/routes/products.js';
-import orderRoutes from './server/routes/orders.js';
-import { initDb } from './server/config/db.js';
+import authRoutes from './routes/auth.js';
+import productRoutes from './routes/products.js';
+import orderRoutes from './routes/orders.js';
+import { initDb } from './config/db.js';
 
 dotenv.config();
 
@@ -23,7 +23,9 @@ async function startServer() {
   const app = express();
   const PORT = 3000;
 
-  app.use(cors());
+  app.use(cors({
+    origin: "*"
+  }));
   app.use(express.json());
 
   app.get('/api/health', (req, res) => {

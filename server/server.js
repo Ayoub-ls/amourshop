@@ -3,7 +3,6 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { createServer as createViteServer } from 'vite';
 import pg from 'pg';
 
 import authRoutes from './routes/auth.js';
@@ -21,7 +20,7 @@ async function startServer() {
   await initDb();
 
   const app = express();
-  const PORT = 3000;
+  const PORT = process.env.PORT || 3000;
 
   app.use(cors({
     origin: "*"
@@ -37,17 +36,12 @@ async function startServer() {
   app.use('/api/products', productRoutes);
   app.use('/api/orders', orderRoutes);
 
-  // Vite middleware for development
-  if (process.env.NODE_ENV !== 'production') {
-    const vite = await createViteServer({
-      server: { middlewareMode: true },
-      appType: 'spa',
-    });
-    app.use(vite.middlewares);
-  } else {
-    app.use(express.static(path.join(__dirname, 'dist')));
+  // Serve static files in production
+  if (process.env.NODE_ENV === 'production') {
+    const clientBuildPath = path.join(__dirname, '../client/dist');
+    app.use(express.static(clientBuildPath));
     app.get('*', (req, res) => {
-      res.sendFile(path.join(__dirname, 'dist', 'index.html'));
+      res.sendFile(path.join(clientBuildPath, 'index.html'));
     });
   }
 

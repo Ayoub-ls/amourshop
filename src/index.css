@@ -1,0 +1,39 @@
+@import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@300;400;500;600;700&family=Nunito:wght@300;400;600;700&display=swap');
+
+@theme {
+  --font-sans: "Nunito", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Fredoka", sans-serif;
+
+  --color-primary: #FFB6C1;
+  --color-secondary: #FFD6E0;
+  --color-accent-purple: #CDB4DB;
+  --color-accent-blue: #BDE0FE;
+  --color-accent-pink: #FFC8DD;
+  --color-bg-soft: #FFF9FB;
+}
+
+@layer base {
+  body {
+    @apply bg-bg-soft text-gray-800 font-sans;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-display;
+  }
+}
+
+.cute-card {
+  @apply bg-white rounded-2xl shadow-sm border border-pink-50 hover:shadow-md transition-all duration-300;
+}
+
+@utility cute-button {
+  @apply px-6 py-2 rounded-full font-medium transition-all duration-300 active:scale-95;
+}
+
+@utility primary-button {
+  @apply cute-button bg-primary text-white hover:bg-pink-400 shadow-sm hover:shadow-pink-200;
+}
+
+@utility secondary-button {
+  @apply cute-button bg-accent-blue text-white hover:bg-blue-300 shadow-sm;
+}

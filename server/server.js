@@ -36,15 +36,7 @@ async function startServer() {
   app.use('/api/products', productRoutes);
   app.use('/api/orders', orderRoutes);
 
-  // Serve static files in production
-  if (process.env.NODE_ENV === 'production') {
-    const clientBuildPath = path.join(__dirname, '../client/dist');
-    app.use(express.static(clientBuildPath));
-    // Use an error-free catch-all middleware in Express 5
-    app.use((req, res) => {
-      res.sendFile(path.join(clientBuildPath, 'index.html'));
-    });
-  }
+
 
   app.listen(PORT, '0.0.0.0', () => {
     console.log(`Server running on http://localhost:${PORT}`);

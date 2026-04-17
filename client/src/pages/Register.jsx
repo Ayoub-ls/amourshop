@@ -18,7 +18,7 @@ export default function Register() {
     e.preventDefault();
     setError('');
     if (initialUsers.find(u => u.email === email)) {
-      setError('L\\'utilisateur existe déjà');
+      setError("L'utilisateur existe déjà");
       return;
     }
     const newUser = { id: Date.now(), name, email, password, role: 'user' };

@@ -160,20 +160,25 @@ export default function AdminDashboard() {
       {/* Main Content Area */}
       <main className="flex-grow overflow-hidden flex flex-col">
         {/* Top Header */}
-        <header className="h-20 bg-white/80 backdrop-blur-md border-b border-gray-100 flex items-center justify-between px-8 z-10 sticky top-0">
+        <header className="h-20 bg-white/80 backdrop-blur-md border-b border-gray-100 flex items-center justify-between px-4 md:px-8 z-10 sticky top-0">
           <div className="flex items-center gap-4">
-            {/* Mobile menu button could go here */}
-            <h1 className="text-2xl font-display font-bold text-gray-900 capitalize">
+            <h1 className="text-xl md:text-2xl font-display font-bold text-gray-900 capitalize">
               {activeTab}
             </h1>
           </div>
-          <div className="flex items-center gap-6">
+          <div className="flex items-center gap-4 md:gap-6">
             <div className="hidden lg:flex items-center bg-gray-100 rounded-full px-4 py-2">
               <Search size={18} className="text-gray-400 mr-2" />
               <input type="text" placeholder="Search..." className="bg-transparent border-none focus:outline-none text-sm w-48" />
             </div>
-            <div className="flex items-center gap-3 pl-6 border-l border-gray-200">
-              <img src={`https://ui-avatars.com/api/?name=${user.name}&background=fbcfe8&color=be185d`} alt="Admin" className="w-10 h-10 rounded-full border border-pink-100" />
+            <div className="flex items-center gap-3 md:pl-6 md:border-l border-gray-200">
+              <button 
+                onClick={handleLogout}
+                className="md:hidden p-2 text-gray-400 hover:text-red-500 transition-colors"
+              >
+                <LogOut size={20} />
+              </button>
+              <img src={`https://ui-avatars.com/api/?name=${user.name}&background=fbcfe8&color=be185d`} alt="Admin" className="w-8 h-8 md:w-10 md:h-10 rounded-full border border-pink-100" />
               <div className="hidden sm:block">
                 <p className="text-sm font-bold text-gray-900">{user.name}</p>
                 <p className="text-xs text-gray-500 capitalize">{user.role}</p>
@@ -269,14 +274,14 @@ export default function AdminDashboard() {
                 initial={{ opacity: 0, scale: 0.98 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.98 }}
                 className="space-y-6"
               >
-                <div className="flex justify-between items-center mb-6">
+                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
                   <div>
                     <h2 className="text-xl font-bold text-gray-900">Inventory</h2>
                     <p className="text-sm text-gray-500">Manage your store's products</p>
                   </div>
                   <button
                     onClick={() => setShowAddModal(true)}
-                    className="bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-400 hover:to-purple-400 text-white px-6 py-3 rounded-xl font-bold shadow-lg shadow-pink-500/30 transition-all flex items-center gap-2 hover:-translate-y-0.5"
+                    className="w-full sm:w-auto justify-center bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-400 hover:to-purple-400 text-white px-6 py-3 rounded-xl font-bold shadow-lg shadow-pink-500/30 transition-all flex items-center gap-2 hover:-translate-y-0.5"
                   >
                     <Plus size={20} /> Add Product
                   </button>
@@ -379,6 +384,28 @@ export default function AdminDashboard() {
           </AnimatePresence>
         </div>
       </main>
+
+      {/* Mobile Bottom Navigation */}
+      <div className="md:hidden fixed bottom-0 left-0 right-0 bg-white/90 backdrop-blur-md border-t border-gray-100 flex justify-around items-center px-4 py-2 z-50 shadow-[0_-4px_20px_-10px_rgba(0,0,0,0.1)]">
+        {[
+          { id: 'dashboard', icon: LayoutDashboard, label: 'Overview' },
+          { id: 'products', icon: Package, label: 'Products' },
+          { id: 'orders', icon: ShoppingBag, label: 'Orders' }
+        ].map((item) => (
+          <button
+            key={item.id}
+            onClick={() => setActiveTab(item.id)}
+            className={`flex flex-col items-center justify-center gap-1 p-2 rounded-xl transition-all duration-300 w-20 ${
+              activeTab === item.id ? 'text-pink-600 font-bold' : 'text-gray-400 hover:text-gray-600 font-medium'
+            }`}
+          >
+            <div className={`p-1.5 rounded-xl transition-all duration-300 ${activeTab === item.id ? 'bg-pink-50' : 'bg-transparent'}`}>
+              <item.icon size={22} className={activeTab === item.id ? 'text-pink-500' : ''} />
+            </div>
+            <span className="text-[10px]">{item.label}</span>
+          </button>
+        ))}
+      </div>
 
       {/* Add Product Modal (AnimatePresence allows exit animations) */}
       <AnimatePresence>

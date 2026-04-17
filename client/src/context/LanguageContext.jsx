@@ -18,7 +18,7 @@ const translations = {
     search: 'Rechercher...',
     baby: 'Bébé',
     kids: 'Enfants',
-    accessories: 'Accessoires',
+    accessories: 'Accessoire',
     testimonials: 'Témoignages',
     newsletter: 'Newsletter',
     subscribe: 'S\'abonner',
@@ -50,7 +50,10 @@ const translations = {
 };
 
 export const LanguageProvider = ({ children }) => {
-  const [lang, setLang] = useState(localStorage.getItem('lang') || 'fr');
+  const [lang, setLang] = useState(() => {
+    const storedLang = localStorage.getItem('lang');
+    return ['fr', 'ar'].includes(storedLang) ? storedLang : 'fr';
+  });
 
   const toggleLang = () => {
     const newLang = lang === 'fr' ? 'ar' : 'fr';
@@ -58,7 +61,10 @@ export const LanguageProvider = ({ children }) => {
     localStorage.setItem('lang', newLang);
   };
 
-  const t = (key) => translations[lang][key] || key;
+  const t = (key) => {
+    const translationSet = translations[lang] || translations.fr;
+    return translationSet[key] || key;
+  };
 
   return (
     <LanguageContext.Provider value={{ lang, toggleLang, t, isRtl: lang === 'ar' }}>

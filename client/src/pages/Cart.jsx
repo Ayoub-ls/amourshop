@@ -14,10 +14,10 @@ export default function Cart() {
         <div className="w-20 h-20 bg-pink-50 rounded-full flex items-center justify-center mx-auto mb-6">
           <ShoppingBag size={40} className="text-primary" />
         </div>
-        <h2 className="text-2xl font-display font-bold mb-4">Your cart is empty</h2>
-        <p className="text-gray-500 mb-8">Looks like you haven't added anything yet!</p>
+        <h2 className="text-2xl font-display font-bold mb-4">Votre panier est vide</h2>
+        <p className="text-gray-500 mb-8">On dirait que vous n'avez encore rien ajouté !</p>
         <Link to="/shop" className="primary-button inline-block">
-          Start Shopping
+          Commencer vos achats
         </Link>
       </div>
     );
@@ -38,7 +38,7 @@ export default function Cart() {
               />
               <div className="flex-grow">
                 <h3 className="font-display font-bold text-gray-800">{item.name}</h3>
-                <p className="text-sm text-gray-400 mb-2">Size: {item.size || 'N/A'}</p>
+                <p className="text-sm text-gray-400 mb-2">Taille : {item.size || 'N/A'}</p>
                 <p className="text-primary font-bold">{item.price} DA</p>
               </div>
               <div className="flex items-center gap-3 bg-pink-50 rounded-full px-3 py-1">
@@ -68,15 +68,15 @@ export default function Cart() {
 
         <div className="lg:col-span-1">
           <div className="cute-card p-8 sticky top-24">
-            <h2 className="text-xl font-display font-bold mb-6">Order Summary</h2>
+            <h2 className="text-xl font-display font-bold mb-6">Résumé de la commande</h2>
             <div className="space-y-4 mb-8">
               <div className="flex justify-between text-gray-600">
-                <span>Subtotal</span>
+                <span>Sous-total</span>
                 <span>{total} DA</span>
               </div>
               <div className="flex justify-between text-gray-600">
-                <span>Shipping</span>
-                <span className="text-green-500 font-medium">Free</span>
+                <span>Livraison</span>
+                <span className="text-green-500 font-medium">Gratuite</span>
               </div>
               <div className="border-t border-pink-100 pt-4 flex justify-between text-xl font-bold">
                 <span>{t('total')}</span>

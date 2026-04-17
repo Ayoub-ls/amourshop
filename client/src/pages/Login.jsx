@@ -3,7 +3,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useLanguage } from '../context/LanguageContext';
 import { motion } from 'motion/react';
-import API from '../services/api';
+import { initialUsers } from '../services/demoData';
 
 export default function Login() {
   const [email, setEmail] = useState('');
@@ -13,24 +13,15 @@ export default function Login() {
   const { t } = useLanguage();
   const navigate = useNavigate();
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
     setError('');
-    try {
-      const res = await fetch(API + '/api/auth/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
-      });
-      const data = await res.json();
-      if (res.ok) {
-        login(data.user, data.token);
-        navigate('/');
-      } else {
-        setError(data.message || 'Login failed');
-      }
-    } catch (err) {
-      setError('Something went wrong');
+    const foundUser = initialUsers.find(u => u.email === email && u.password === password);
+    if (foundUser) {
+      login(foundUser, `mock-token-${foundUser.id}`);
+      navigate('/');
+    } else {
+      setError('Identifiants invalides');
     }
   };
 
@@ -51,7 +42,7 @@ export default function Login() {
 
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Email</label>
+            <label className="block text-sm font-medium text-gray-700 mb-2">E-mail</label>
             <input
               type="email"
               required
@@ -61,7 +52,7 @@ export default function Login() {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Password</label>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Mot de passe</label>
             <input
               type="password"
               required
@@ -77,9 +68,9 @@ export default function Login() {
         </form>
 
         <p className="mt-8 text-center text-gray-500 text-sm">
-          Don't have an account?{' '}
+          Pas encore de compte ?{' '}
           <Link to="/register" className="text-primary font-bold hover:underline">
-            Register here
+            Inscrivez-vous ici
           </Link>
         </p>
       </motion.div>

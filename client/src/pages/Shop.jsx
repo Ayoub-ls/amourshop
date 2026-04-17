@@ -2,37 +2,38 @@ import React, { useState, useEffect } from 'react';
 import { useLanguage } from '../context/LanguageContext';
 import ProductCard from '../components/ProductCard';
 import { Search, Filter } from 'lucide-react';
-import API from '../services/api';
+import { fetchProducts } from '../services/api';
 
 export default function Shop() {
   const { t } = useLanguage();
   const [products, setProducts] = useState([]);
+  const [allProducts, setAllProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [category, setCategory] = useState('');
 
-  useEffect(() => {
-    fetchProducts();
-  }, [category]);
-
-  const fetchProducts = async () => {
-    setLoading(true);
-    try {
-      let url = API + '/api/products';
-      if (category) url += `?category=${category}`;
-      const res = await fetch(url);
-      const data = await res.json();
-      setProducts(data);
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setLoading(false);
-    }
-  };
-
   const filteredProducts = products.filter(p =>
     p.name.toLowerCase().includes(search.toLowerCase())
   );
+
+  useEffect(() => {
+    setLoading(true);
+    fetchProducts()
+      .then(data => {
+        setAllProducts(data);
+        setProducts(data);
+      })
+      .catch(err => console.error(err))
+      .finally(() => setLoading(false));
+  }, []);
+
+  useEffect(() => {
+    if (category) {
+      setProducts(allProducts.filter(p => (p.category || '').toLowerCase() === category.toLowerCase()));
+    } else {
+      setProducts(allProducts);
+    }
+  }, [category, allProducts]);
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -56,10 +57,10 @@ export default function Shop() {
             value={category}
             onChange={(e) => setCategory(e.target.value)}
           >
-            <option value="">All Categories</option>
-            <option value="baby">Baby</option>
-            <option value="kids">Kids</option>
-            <option value="accessories">Accessories</option>
+            <option value="">Toutes les catégories</option>
+            <option value="baby">Bébé</option>
+            <option value="kids">Enfants</option>
+            <option value="accessories">Accessoires</option>
           </select>
         </div>
       </div>
@@ -78,7 +79,7 @@ export default function Shop() {
 
       {!loading && filteredProducts.length === 0 && (
         <div className="text-center py-20">
-          <p className="text-gray-500 text-lg">No products found matching your criteria.</p>
+          <p className="text-gray-500 text-lg">Aucun produit trouvé selon vos critères.</p>
         </div>
       )}
     </div>

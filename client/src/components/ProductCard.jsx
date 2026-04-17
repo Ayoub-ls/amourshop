@@ -4,17 +4,19 @@ import { ShoppingCart, Eye } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { useLanguage } from '../context/LanguageContext';
 import { motion } from 'motion/react';
+import { useNavigate } from 'react-router-dom';
 
-export default function ProductCard({ product }) {
+export default function ProductCard({ product, className = '' }) {
   const { addToCart } = useCart();
   const { t } = useLanguage();
+  const navigate = useNavigate();
 
   return (
     <motion.div
       whileHover={{ y: -5 }}
-      className="cute-card overflow-hidden group"
+      className={`${className} cute-card overflow-hidden group`}
     >
-      <div className="relative aspect-[4/5] overflow-hidden bg-gray-100">
+      <div onClick={() => navigate(`/product/${product.id}`)} className="relative aspect-[4/5] overflow-hidden bg-gray-100">
         <img
           src={product.image_url || 'https://picsum.photos/seed/kids/400/500'}
           alt={product.name}
@@ -42,7 +44,7 @@ export default function ProductCard({ product }) {
       <div className="p-4 text-center">
         <p className="text-xs text-gray-400 uppercase tracking-wider mb-1 font-medium">{product.category}</p>
         <h3 className="font-display font-semibold text-gray-800 mb-2 truncate">{product.name}</h3>
-        <p className="text-primary font-bold text-lg">{product.price} DA</p>
+        <p className="text-pink-400 font-bold text-lg">{product.price} DA</p>
       </div>
     </motion.div>
   );

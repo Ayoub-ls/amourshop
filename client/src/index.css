@@ -1,5 +1,6 @@
-@import "tailwindcss";
 @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@300;400;500;600;700&family=Nunito:wght@300;400;600;700&display=swap');
+@import "tailwindcss";
+
 
 @theme {
   --font-sans: "Nunito", ui-sans-serif, system-ui, sans-serif;
@@ -17,7 +18,13 @@
   body {
     @apply bg-bg-soft text-gray-800 font-sans;
   }
-  h1, h2, h3, h4, h5, h6 {
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
     @apply font-display;
   }
 }
@@ -31,9 +38,9 @@
 }
 
 @utility primary-button {
-  @apply cute-button bg-primary text-white hover:bg-pink-400 shadow-sm hover:shadow-pink-200;
+  @apply cute-button bg-pink-400 lg:bg-primary text-white lg:hover:bg-pink-400 shadow-sm lg:hover:shadow-pink-200;
 }
 
 @utility secondary-button {
-  @apply cute-button bg-accent-blue text-white hover:bg-blue-300 shadow-sm;
+  @apply cute-button bg-pink-400 lg:bg-accent-blue text-white lg:hover:bg-blue-300 shadow-sm;
 }

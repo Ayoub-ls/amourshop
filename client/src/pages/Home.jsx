@@ -1,17 +1,32 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
 import { useLanguage } from '../context/LanguageContext';
 import { ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { fetchProducts } from '../services/api';
+import ProductCard from '../components/ProductCard';
 
 export default function Home() {
   const { t } = useLanguage();
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const categories = [
-    { id: 'baby', name: t('baby'), color: 'bg-secondary', img: 'https://picsum.photos/seed/baby/400/400' },
-    { id: 'kids', name: t('kids'), color: 'bg-accent-blue', img: 'https://picsum.photos/seed/kids/400/400' },
-    { id: 'accessories', name: t('accessories'), color: 'bg-accent-purple', img: 'https://picsum.photos/seed/toy/400/400' },
-  ];
+  useEffect(() => {
+    fetchProducts()
+      .then(data => setProducts(data))
+      .catch(err => console.error("Error fetching products:", err))
+      .finally(() => setLoading(false));
+  }, []);
+
+  const baby = products.filter(p =>
+    p.category.toLowerCase() === 'baby'
+  );
+  const kids = products.filter(p =>
+    p.category.toLowerCase() === 'kids'
+  );
+  const accessories = products.filter(p =>
+    p.category.toLowerCase() === 'accessories'
+  );
 
   return (
     <div className="space-y-16 pb-16">
@@ -19,7 +34,7 @@ export default function Home() {
       <section className="relative h-[600px] flex items-center overflow-hidden">
         <div className="absolute inset-0 z-0">
           <img
-            src="https://picsum.photos/seed/amourshop/1920/1080"
+            src="./hero.jpg"
             alt="Hero"
             className="w-full h-full object-cover opacity-40"
             referrerPolicy="no-referrer"
@@ -35,13 +50,13 @@ export default function Home() {
             className="max-w-xl"
           >
             <span className="inline-block px-4 py-1 bg-primary/20 text-primary rounded-full text-sm font-bold mb-6">
-              New Collection 2026
+              Nouvelle Collection 2026
             </span>
             <h1 className="text-5xl md:text-7xl font-display font-bold text-gray-900 leading-tight mb-6">
-              Adorable Outfits for Your <span className="text-primary italic">Little Ones</span>
+              Des tenues adorables pour vos <span className="text-primary italic">petits</span>
             </h1>
             <p className="text-lg text-gray-600 mb-8">
-              Discover our curated collection of soft, comfortable, and stylish clothing for babies and kids.
+              Découvrez notre sélection de vêtements doux, confortables et stylés pour bébés et enfants.
             </p>
             <div className="flex gap-4">
               <Link to="/shop" className="primary-button flex items-center gap-2">
@@ -53,37 +68,39 @@ export default function Home() {
       </section>
 
       {/* Categories */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h2 className="text-3xl font-display font-bold text-center mb-12">{t('categories')}</h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {categories.map((cat, idx) => (
-            <motion.div
-              key={cat.id}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ delay: idx * 0.1 }}
-              className={`relative h-64 rounded-3xl overflow-hidden group cursor-pointer ${cat.color}`}
-            >
-              <img
-                src={cat.img}
-                alt={cat.name}
-                className="absolute inset-0 w-full h-full object-cover opacity-50 group-hover:scale-110 transition-transform duration-500"
-                referrerPolicy="no-referrer"
-              />
-              <div className="absolute inset-0 flex items-center justify-center">
-                <h3 className="text-3xl font-display font-bold text-white drop-shadow-md">{cat.name}</h3>
-              </div>
-            </motion.div>
-          ))}
-        </div>
-      </section>
+      {loading ? (
+        <div className="flex justify-center p-12">Chargement des produits...</div>
+      ) : (
+        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex flex-col gap-8">
+            <h2 className="text-3xl font-display font-bold mb-12">{t('categories')} - Baby</h2>
+            <div className="flex overflow-x-scroll gap-6 md:gap-8">
+              {baby.map(product => (
+                <ProductCard className="min-w-1/2 w-1/2 md:w-1/3 md:min-w-1/3 lg:w-1/4 lg:min-w-1/4" key={product.id} product={product} />
+              ))}
+            </div>
+            <h2 className="text-3xl font-display font-bold mb-12">{t('categories')} - Kids</h2>
+            <div className="flex overflow-x-scroll gap-6 md:gap-8">
+              {kids.map(product => (
+                <ProductCard className="min-w-1/2 w-1/2 md:w-1/3 md:min-w-1/3 lg:w-1/4 lg:min-w-1/4" key={product.id} product={product} />
+              ))}
+            </div>
+            <h2 className="text-3xl font-display font-bold mb-12">{t('categories')} - Accessories</h2>
+            <div className="flex overflow-x-scroll gap-6 md:gap-8">
+              {accessories.map(product => (
+                <ProductCard className="min-w-1/2 w-1/2 md:w-1/3 md:min-w-1/3 lg:w-1/4 lg:min-w-1/4" key={product.id} product={product} />
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* Featured Section Placeholder */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center py-12 bg-white rounded-[40px] shadow-sm border border-pink-50">
         <h2 className="text-3xl font-display font-bold mb-4">{t('featured')}</h2>
-        <p className="text-gray-500 mb-8">Check out our most loved pieces this season!</p>
+        <p className="text-gray-500 mb-8">Découvrez nos pièces préférées cette saison !</p>
         <Link to="/shop" className="secondary-button inline-block">
-          View All Products
+          Voir tous les produits
         </Link>
       </section>
     </div>

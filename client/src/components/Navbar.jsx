@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { ShoppingCart, User, Search, Menu, Globe } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
@@ -12,11 +12,11 @@ export default function Navbar() {
   const navigate = useNavigate();
 
   return (
-    <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-pink-100">
+    <nav className={`fixed w-screen top-0 z-50 bg-white/80 backdrop-blur-md border-b border-pink-100`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
-          <div className="flex items-center gap-8">
-            <Link to="/" className="text-2xl font-display font-bold text-primary">
+          <div className="flex items-center gap-4 md:gap-8 min-w-0">
+            <Link to="/" className="text-xl md:text-2xl font-display font-bold text-primary truncate">
               Amourshop
             </Link>
             <div className="hidden md:flex items-center gap-6">
@@ -25,11 +25,7 @@ export default function Navbar() {
             </div>
           </div>
 
-          <div className="flex items-center gap-4">
-            <button onClick={toggleLang} className="p-2 hover:bg-pink-50 rounded-full transition-colors flex items-center gap-1 text-sm font-medium">
-              <Globe size={20} />
-              <span className="uppercase">{lang}</span>
-            </button>
+          <div className="flex items-center gap-2 md:gap-4 shrink-0">
 
             <Link to="/cart" className="p-2 hover:bg-pink-50 rounded-full transition-colors relative">
               <ShoppingCart size={22} />
@@ -41,9 +37,9 @@ export default function Navbar() {
             </Link>
 
             {user ? (
-              <div className="flex items-center gap-4">
+              <div className="flex items-center gap-2 md:gap-4">
                 {user.role === 'admin' && (
-                  <Link to="/admin" className="text-xs font-bold text-accent-purple hover:underline">Admin</Link>
+                  <Link to="/admin" className="text-[10px] md:text-xs font-bold text-accent-purple hover:underline">Admin</Link>
                 )}
                 <button onClick={logout} className="text-sm text-gray-600 hover:text-primary">{t('logout')}</button>
               </div>

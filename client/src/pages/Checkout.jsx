@@ -4,7 +4,8 @@ import { useLanguage } from '../context/LanguageContext';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'motion/react';
-import API from '../services/api';
+import { createOrder } from '../services/api';
+
 
 export default function Checkout() {
   const { cart, total, clearCart } = useCart();
@@ -15,9 +16,9 @@ export default function Checkout() {
   const [formData, setFormData] = useState({
     name: user?.name || '',
     phone: '',
-    city: '',
-    address: ''
+    city: ''
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const algerianStates = [
     "Adrar", "Chlef", "Laghouat", "Oum El Bouaghi", "Batna", "Béjaïa", "Biskra", "Béchar", "Blida", "Bouira",
@@ -29,30 +30,20 @@ export default function Checkout() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsSubmitting(true);
     try {
-      const res = await fetch(API + '/api/orders', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
-        },
-        body: JSON.stringify({
-          items: cart.map(item => ({ product_id: item.id, quantity: item.quantity, price: item.price })),
-          total_price: total,
-          shipping_address: formData
-        })
+      await createOrder({
+        user_id: user ? (user.id || user._id) : 'guest',
+        total_price: total,
+        shipping_address: formData
       });
-
-      if (res.ok) {
-        alert('Order placed successfully!');
-        clearCart();
-        navigate('/');
-      } else {
-        alert('Failed to place order. Please login first.');
-        navigate('/login');
-      }
-    } catch (err) {
-      console.error(err);
+      alert('Commande effectuée avec succès !');
+      clearCart();
+      navigate('/');
+    } catch (error) {
+      alert('Erreur lors de la commande. Veuillez réessayer.');
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -64,7 +55,7 @@ export default function Checkout() {
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Full Name</label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Nom Complet</label>
               <input
                 type="text"
                 required
@@ -74,7 +65,7 @@ export default function Checkout() {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Phone Number</label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Numéro de téléphone</label>
               <input
                 type="tel"
                 required
@@ -86,38 +77,28 @@ export default function Checkout() {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">City (Wilaya)</label>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Ville (Wilaya)</label>
             <select
               required
               className="w-full px-4 py-3 rounded-2xl border border-pink-100 focus:outline-none focus:ring-2 focus:ring-primary/20 bg-white"
               value={formData.city}
               onChange={(e) => setFormData({ ...formData, city: e.target.value })}
             >
-              <option value="">Select your city</option>
+              <option value="">Sélectionnez votre ville</option>
               {algerianStates.map(state => (
                 <option key={state} value={state}>{state}</option>
               ))}
             </select>
           </div>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Detailed Address</label>
-            <textarea
-              required
-              rows="3"
-              className="w-full px-4 py-3 rounded-2xl border border-pink-100 focus:outline-none focus:ring-2 focus:ring-primary/20"
-              value={formData.address}
-              onChange={(e) => setFormData({ ...formData, address: e.target.value })}
-            />
-          </div>
 
           <div className="border-t border-pink-100 pt-6 mt-8">
             <div className="flex justify-between text-xl font-bold mb-8">
-              <span>Total to Pay</span>
+              <span>Total à payer</span>
               <span className="text-primary">{total} DA</span>
             </div>
-            <button type="submit" className="w-full primary-button py-4 text-lg">
-              Confirm Order
+            <button type="submit" disabled={isSubmitting} className={`w-full py-4 text-lg transition-all ${isSubmitting ? 'bg-gray-400 cursor-not-allowed rounded-full text-white font-bold' : 'primary-button'}`}>
+              {isSubmitting ? 'Traitement en cours...' : 'Confirmer la commande'}
             </button>
           </div>
         </form>

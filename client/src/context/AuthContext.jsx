@@ -1,5 +1,5 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
-import API from '../services/api';
+import { initialUsers } from '../services/demoData';
 
 const AuthContext = createContext();
 
@@ -9,30 +9,17 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchUser = async () => {
-      if (token) {
-        try {
-          const res = await fetch(`${API}/api/auth/me`, {
-            headers: { 'Authorization': `Bearer ${token}` }
-          });
-          if (res.ok) {
-            const userData = await res.json();
-            setUser(userData);
-            localStorage.setItem('user', JSON.stringify(userData));
-          } else {
-            // Token might be invalid or expired
-            logout();
-          }
-        } catch (err) {
-          console.error('Failed to fetch user:', err);
-          const savedUser = localStorage.getItem('user');
-          if (savedUser) setUser(JSON.parse(savedUser));
-        }
+    if (token) {
+      const savedUser = localStorage.getItem('user');
+      if (savedUser) {
+        setUser(JSON.parse(savedUser));
+      } else {
+        const fallback = initialUsers.find(u => `mock-token-${u.id}` === token);
+        if (fallback) setUser(fallback);
+        else logout();
       }
-      setLoading(false);
-    };
-
-    fetchUser();
+    }
+    setLoading(false);
   }, [token]);
 
   const login = (userData, userToken) => {

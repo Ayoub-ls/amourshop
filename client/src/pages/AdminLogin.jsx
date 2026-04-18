@@ -21,10 +21,10 @@ export default function AdminLogin() {
   const handleSubmit = (e) => {
     e.preventDefault();
     setError('');
-    
+
     // We are matching against the initialUsers in demoData
     // Usually handled by backend, but here it's demo context logic
-    if (email === 'admin@amourshop.com' && password === 'password123') {
+    if (email === 'imad@amourshop.com' && password === 'Imad123') {
       const mockAdmin = {
         id: 1,
         name: 'Admin User',
@@ -34,7 +34,7 @@ export default function AdminLogin() {
       login(mockAdmin, 'mock-token-1');
       navigate('/admin');
     } else {
-      setError('Invalid admin credentials. (Hint: admin@amourshop.com / password123)');
+      setError('Invalid admin credentials. ');
     }
   };
 
@@ -57,12 +57,12 @@ export default function AdminLogin() {
               <Shield className="text-white" size={32} />
             </div>
           </div>
-          
+
           <h2 className="text-3xl font-display font-bold text-center mb-2 text-white">Amourshop Admin</h2>
           <p className="text-gray-400 text-center mb-8">Portail d'accès sécurisé</p>
 
           {error && (
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0, x: -10 }}
               animate={{ opacity: 1, x: 0 }}
               className="bg-red-500/10 border border-red-500/50 text-red-200 p-4 rounded-2xl text-sm mb-6 flex items-center gap-3"
@@ -89,7 +89,7 @@ export default function AdminLogin() {
                 />
               </div>
             </div>
-            
+
             <div>
               <label className="block text-sm font-medium text-gray-300 mb-2">Mot de passe</label>
               <div className="relative">
@@ -107,18 +107,18 @@ export default function AdminLogin() {
               </div>
             </div>
 
-            <button 
-              type="submit" 
+            <button
+              type="submit"
               className="w-full bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-400 hover:to-purple-400 text-white font-bold py-4 rounded-2xl transition-all duration-300 flex items-center justify-center gap-2 group shadow-[0_0_20px_rgba(236,72,153,0.3)] hover:shadow-[0_0_30px_rgba(236,72,153,0.5)] mt-8"
             >
               <span>S'authentifier</span>
               <ChevronRight size={18} className="group-hover:translate-x-1 transition-transform" />
             </button>
           </form>
-          
+
           <div className="mt-8 text-center">
-            <button 
-              onClick={() => navigate('/')} 
+            <button
+              onClick={() => navigate('/')}
               className="text-gray-500 hover:text-white transition-colors text-sm"
             >
               ← Retour à la boutique publique

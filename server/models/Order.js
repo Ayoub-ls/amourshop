@@ -16,6 +16,10 @@ const orderSchema = mongoose.Schema({
   shipping_address: {
     type: Object,
     required: true,
+  },
+  items: {
+    type: Array,
+    required: true,
   }
 }, {
   timestamps: true,

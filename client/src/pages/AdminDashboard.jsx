@@ -21,8 +21,8 @@ export default function AdminDashboard() {
     name: '',
     description: '',
     price: '',
-    category: 'Baby',
-    sizes: ['0-3m', '3-6m', '6-12m'],
+    category: 'baby',
+    sizes: ['6m', '12m', '18m', '24m'],
     image_url: ''
   });
 
@@ -67,7 +67,7 @@ export default function AdminDashboard() {
       .then(savedProduct => {
         setProducts([savedProduct, ...products]);
         setShowAddModal(false);
-        setNewProduct({ name: '', description: '', price: '', category: 'Baby', sizes: ['0-3m', '3-6m', '6-12m'], image_url: '' });
+        setNewProduct({ name: '', description: '', price: '', category: 'baby', sizes: ['6m', '12m', '18m', '24m'], image_url: '' });
         setImageFile(null);
       })
       .catch(err => alert("Error adding product"))
@@ -240,6 +240,7 @@ export default function AdminDashboard() {
                         <tr>
                           <th className="p-4 pl-6">Order ID</th>
                           <th className="p-4">Customer</th>
+                          <th className="p-4">Products</th>
                           <th className="p-4">Amount</th>
                           <th className="p-4">Status</th>
                           <th className="p-4">Date</th>
@@ -249,7 +250,21 @@ export default function AdminDashboard() {
                         {orders.slice(0, 5).map(o => (
                           <tr key={o.id || o._id} className="hover:bg-gray-50 transition-colors">
                             <td className="p-4 pl-6 font-mono font-medium">#{o.id || o._id}</td>
-                            <td className="p-4">User {o.user_id}</td>
+                            <td className="p-4 text-gray-600">
+                              <span className="block font-medium">User {o.user_id}</span>
+                              <span className="text-[10px] text-pink-500 font-bold uppercase">{o.shipping_address?.city}</span>
+                            </td>
+                            <td className="p-4">
+                              <div className="flex flex-col gap-1 max-h-20 overflow-y-auto">
+                                {o.items?.map((item, idx) => (
+                                  <div key={idx} className="text-[11px] text-gray-600 flex items-center gap-2">
+                                    <span className="font-bold text-pink-500">{item.quantity}x</span>
+                                    <span className="truncate max-w-[120px] font-medium">{item.name}</span>
+                                    {item.size && <span className="text-[9px] bg-gray-100 px-1 rounded text-gray-400">{item.size}</span>}
+                                  </div>
+                                ))}
+                              </div>
+                            </td>
                             <td className="p-4 font-bold text-gray-900">{o.total_price} DA</td>
                             <td className="p-4">
                               <span className={`px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wide ${(o.status || 'Processing') === 'Shipped' ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'}`}>
@@ -350,6 +365,7 @@ export default function AdminDashboard() {
                       <tr>
                         <th className="p-4 pl-6">Order ID</th>
                         <th className="p-4">Customer ID</th>
+                        <th className="p-4">Products</th>
                         <th className="p-4">Total</th>
                         <th className="p-4">Status</th>
                         <th className="p-4">Date</th>
@@ -359,7 +375,25 @@ export default function AdminDashboard() {
                       {filteredOrders.map(o => (
                         <tr key={o.id || o._id} className="hover:bg-pink-50/30 transition-colors">
                           <td className="p-4 pl-6 font-mono font-medium text-gray-900">#{o.id || o._id}</td>
-                          <td className="p-4 text-gray-600">{o.user_id}</td>
+                          <td className="p-4 text-gray-600">
+                            <span className="block font-medium">ID: {o.user_id}</span>
+                            <span className="text-[10px] text-pink-500 font-bold uppercase">{o.shipping_address?.city}</span>
+                            <span className="text-[10px] text-gray-400 block">{o.shipping_address?.phone}</span>
+                          </td>
+                          <td className="p-4">
+                            <div className="flex flex-col gap-1.5 max-h-24 overflow-y-auto">
+                              {o.items?.map((item, idx) => (
+                                <div key={idx} className="text-xs text-gray-700 flex items-center gap-2 group">
+                                  <span className="font-bold text-pink-600 bg-pink-50 w-6 h-6 rounded flex items-center justify-center text-[10px]">{item.quantity}x</span>
+                                  <div className="flex flex-col">
+                                    <span className="truncate max-w-[180px] font-semibold">{item.name}</span>
+                                    {item.size && <span className="text-[10px] text-gray-400">Size: {item.size}</span>}
+                                  </div>
+                                </div>
+                              ))}
+                              {(!o.items || o.items.length === 0) && <span className="text-gray-400 italic text-xs">No items listed</span>}
+                            </div>
+                          </td>
                           <td className="p-4 font-bold text-gray-900">{o.total_price} DA</td>
                           <td className="p-4">
                             <button 
@@ -460,12 +494,40 @@ export default function AdminDashboard() {
                       <label className="block text-sm font-bold text-gray-700 mb-1.5">Category</label>
                       <select
                         className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-pink-500/20 focus:border-pink-500 transition-all bg-gray-50 focus:bg-white appearance-none"
-                        value={newProduct.category} onChange={e => setNewProduct({ ...newProduct, category: e.target.value })}
+                        value={newProduct.category} 
+                        onChange={e => {
+                          const cat = e.target.value;
+                          const sizesMap = {
+                            baby: ['6m', '12m', '18m', '24m'],
+                            kids: ['2y', '4y', '6y'],
+                            olderkids: ['8y', '10y', '12y', '14y', '16y'],
+                            accessories: []
+                          };
+                          setNewProduct({ 
+                            ...newProduct, 
+                            category: cat,
+                            sizes: sizesMap[cat] || []
+                          });
+                        }}
                       >
-                        <option value="Baby">Baby</option>
-                        <option value="Kids">Kids</option>
-                        <option value="Accessories">Accessories</option>
+                        <option value="baby">Baby</option>
+                        <option value="kids">Kids</option>
+                        <option value="olderkids">Older Kids</option>
+                        <option value="accessories">Accessories</option>
                       </select>
+                    </div>
+                    <div className="col-span-2">
+                      <label className="block text-sm font-bold text-gray-700 mb-1.5">Available Sizes</label>
+                      <div className="flex flex-wrap gap-2">
+                        {newProduct.sizes.length > 0 ? newProduct.sizes.map(size => (
+                          <span key={size} className="px-3 py-1 bg-pink-50 text-pink-600 rounded-full text-sm font-bold border border-pink-100">
+                            {size}
+                          </span>
+                        )) : (
+                          <span className="text-sm text-gray-500">No sizes for this category</span>
+                        )}
+                      </div>
+                      <p className="text-xs text-gray-400 mt-1">Sizes are automatically set based on the selected category.</p>
                     </div>
                     <div className="col-span-2">
                       <label className="block text-sm font-bold text-gray-700 mb-1.5">Product Image Upload</label>

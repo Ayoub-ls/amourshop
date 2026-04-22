@@ -18,7 +18,27 @@ export default function Checkout() {
     phone: '',
     city: ''
   });
+  const [shippingFee, setShippingFee] = useState(0);
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const saharaCities = [
+    "Adrar", "Tamanrasset", "Illizi", "Tindouf", "Ghardaïa", "Béchar", "Ouargla", "El Oued", "Naâma", "El Bayadh", "Biskra", "Laghouat"
+  ];
+
+  const handleCityChange = (city) => {
+    setFormData({ ...formData, city });
+    if (!city) {
+      setShippingFee(0);
+    } else if (city === "Alger") {
+      setShippingFee(400);
+    } else if (["Boumerdès", "Blida", "Tipaza"].includes(city)) {
+      setShippingFee(500);
+    } else if (saharaCities.includes(city)) {
+      setShippingFee(1000);
+    } else {
+      setShippingFee(600);
+    }
+  };
 
   const algerianStates = [
     "Adrar", "Chlef", "Laghouat", "Oum El Bouaghi", "Batna", "Béjaïa", "Biskra", "Béchar", "Blida", "Bouira",
@@ -34,8 +54,9 @@ export default function Checkout() {
     try {
       await createOrder({
         user_id: user ? (user.id || user._id) : 'guest',
-        total_price: total,
-        shipping_address: formData
+        total_price: total + shippingFee,
+        shipping_address: formData,
+        items: cart
       });
       alert('Commande effectuée avec succès !');
       clearCart();
@@ -82,7 +103,7 @@ export default function Checkout() {
               required
               className="w-full px-4 py-3 rounded-2xl border border-pink-100 focus:outline-none focus:ring-2 focus:ring-primary/20 bg-white"
               value={formData.city}
-              onChange={(e) => setFormData({ ...formData, city: e.target.value })}
+              onChange={(e) => handleCityChange(e.target.value)}
             >
               <option value="">Sélectionnez votre ville</option>
               {algerianStates.map(state => (
@@ -92,12 +113,20 @@ export default function Checkout() {
           </div>
 
 
-          <div className="border-t border-pink-100 pt-6 mt-8">
-            <div className="flex justify-between text-xl font-bold mb-8">
-              <span>Total à payer</span>
-              <span className="text-primary">{total} DA</span>
+          <div className="border-t border-pink-100 pt-6 mt-8 space-y-3">
+            <div className="flex justify-between text-gray-600">
+              <span>Sous-total</span>
+              <span className="font-medium">{total} DA</span>
             </div>
-            <button type="submit" disabled={isSubmitting} className={`w-full py-4 text-lg transition-all ${isSubmitting ? 'bg-gray-400 cursor-not-allowed rounded-full text-white font-bold' : 'primary-button'}`}>
+            <div className="flex justify-between text-gray-600">
+              <span>Frais de livraison</span>
+              <span className="font-medium">{shippingFee} DA</span>
+            </div>
+            <div className="flex justify-between text-xl font-bold pt-4 border-t border-dashed border-pink-50">
+              <span>Total à payer</span>
+              <span className="text-primary">{total + shippingFee} DA</span>
+            </div>
+            <button type="submit" disabled={isSubmitting} className={`w-full py-4 text-lg transition-all mt-4 ${isSubmitting ? 'bg-gray-400 cursor-not-allowed rounded-full text-white font-bold' : 'primary-button'}`}>
               {isSubmitting ? 'Traitement en cours...' : 'Confirmer la commande'}
             </button>
           </div>

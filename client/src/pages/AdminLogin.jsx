@@ -28,7 +28,7 @@ export default function AdminLogin() {
       const mockAdmin = {
         id: 1,
         name: 'Admin User',
-        email: 'admin@amourshop.com',
+        email: 'imad@amourshop.com',
         role: 'admin',
       };
       login(mockAdmin, 'mock-token-1');

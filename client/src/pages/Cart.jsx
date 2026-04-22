@@ -74,10 +74,6 @@ export default function Cart() {
                 <span>Sous-total</span>
                 <span>{total} DA</span>
               </div>
-              <div className="flex justify-between text-gray-600">
-                <span>Livraison</span>
-                <span className="text-green-500 font-medium">Gratuite</span>
-              </div>
               <div className="border-t border-pink-100 pt-4 flex justify-between text-xl font-bold">
                 <span>{t('total')}</span>
                 <span className="text-primary">{total} DA</span>

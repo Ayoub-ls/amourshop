@@ -24,11 +24,11 @@ export default function AdminLogin() {
 
     // We are matching against the initialUsers in demoData
     // Usually handled by backend, but here it's demo context logic
-    if (email === 'imad@amourshop.com' && password === 'Imad123') {
+    if (email === '1410hamour@gmail.com' && password === 'Imad123') {
       const mockAdmin = {
         id: 1,
-        name: 'Admin User',
-        email: 'imad@amourshop.com',
+        name: 'Imad',
+        email: '1410hamour@gmail.com',
         role: 'admin',
       };
       login(mockAdmin, 'mock-token-1');
@@ -83,7 +83,7 @@ export default function AdminLogin() {
                   type="email"
                   required
                   className="w-full pl-11 pr-4 py-3 bg-gray-900/50 border border-gray-700 rounded-2xl text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-pink-500/50 focus:border-pink-500 transition-all font-sans"
-                  placeholder="admin@amourshop.com"
+                  placeholder="1410hamour@gmail.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                 />

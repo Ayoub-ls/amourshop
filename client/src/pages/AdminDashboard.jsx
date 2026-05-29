@@ -313,7 +313,7 @@ export default function AdminDashboard() {
                       >
                         <div className="relative aspect-square overflow-hidden bg-gray-100">
                           <img src={p.image_url || 'https://picsum.photos/seed/kids/400/400'} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-                          <div className="absolute top-3 right-3 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                          <div className="absolute top-3 right-3 flex gap-2">
                             <button className="p-2 bg-white/90 backdrop-blur text-gray-700 hover:text-blue-600 rounded-lg shadow-sm">
                               <Edit2 size={16} />
                             </button>
